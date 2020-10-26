@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Basic Canvas Paint Plugin Example</title>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.css"/>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.mobile.css"/>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="resources/js/bcPaint_default.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_1.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_2.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_3.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_4.js"></script>
+		<style type="text/css">
+			*{
+			  margin: 0;
+			  padding: 0;
+			  list-style: none;
+			}
+
+			body{
+			  font-family: "proxima-nova-soft", "Proxima Nova Soft", Helvetica, Arial, sans-serif;
+			  background-color: #f9f9f9;
+			}
+
+			#container{
+			  width: 100%;
+			  !height: 100%;
+			  height: 800px;
+			  max-width: 1960px;
+			  margin: auto;
+			  background-color: #ffffff;
+			  position: relative;
+			}
+
+			#container h5{
+			  font-size: 12px;
+			  font-weight: 400;
+			  text-transform: uppercase;
+			  margin-top: 40px;
+			  margin-bottom: 10px;
+			}
+
+			#container h4{
+			  font-size: 12px;
+			  font-weight: 300;
+			}
+
+			#container h3{
+			  font-size: 16px;
+			  font-weight: 400;
+			  margin: 10px 0;
+			}
+
+			#container > #header{
+			  background-color: #313131;
+			  color: #e8e8e8;
+			  text-align: center;
+			  width: 100%;
+			  padding: 20px 0;
+			  height:50px;
+			}
+
+			#container > #button_panel{
+			  height: 750px;
+			  width:500px;
+			  padding:0px;
+			  display:inline-block;
+			  border: 1px solid blue;
+				background-color: yellow;
+				float: left;
+				padding: 20px 0px 0px 10px;
+			}
+
+			#container > #frame_panel{
+			  height: 750px;
+			  width: 900px;
+			  padding: 0px 0px 0px 50px;
+			  display:inline-block;
+			}
+						
+			#container > #calculation_panel{
+			  height: 750px;
+			  width:350px;
+			  padding: 0px 0px 0px 10px;
+			  display:inline-block;
+				background-color: pink;
+				float: right;
+			}
+			.button_column{
+			  display:inline-block;
+			  height: 100%;
+			  width:15%;
+			  padding:0px 0px 0px 0px;
+			  margin-left:0px;
+			  margin-top:0px;
+			  !border: 1px solid blue;
+			  
+			}
+			
+			.button_column > div{
+			width: 90%;
+			margin-top:20%;
+			margin-left: auto;
+			margin-right: auto;
+			border: 1px solid green;
+			border-radius: 20%;
+			}
+			
+			
+			#bcPaint-input-div{
+			width:45%;
+			height:70%;
+			display:inline-block;
+			float:right;
+			}
+			
+			input {
+			width:12%;
+			height:100%;
+			margin-left:0px;
+			display:inline-block;
+			text-align:center;
+			visibility:hidden;
+			}
+			
+			
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<h3>Basic Canvas Paint</h3>
+				<h4>Draw, E-Sign and Export</h4>
+			</div>
+			<div id="button_panel">
+				<div id="button_col_lead1" class="button_column">
+					<div id="lead1_0"></div>	<div id="lead1_arc"></div>	<div id="lead1_hood"></div>	<div id="lead1_drap"></div>	<div id="lead1_fil"></div>
+				</div>
+				<div id="button_col_lead2" class="button_column">
+					<div id="lead2_0"></div>	<div id="lead2_c"></div>	<div id="lead2_i"></div>	<div id="lead2_n"></div>	<div id="lead2_m"></div>	<div id="lead2_s"></div>
+				</div>
+				<div id="button_col_start" class="button_column">
+					<div id="start_0"></div>	<div id="start_1"></div>	<div id="start_2"></div>	<div id="start_3"></div>	<div id="start_4"></div>	<div id="start_5"></div>
+				</div>
+				<div id="button_col_main" class="button_column">
+					<div id="main_0"></div>	<div id="main_1"></div>	<div id="main_2"></div>	<div id="main_3"></div>	<div id="main_4"></div>	<div id="main_5"></div>
+				</div>
+				<div id="button_col_end" class="button_column">
+					<div id="end_0"></div>	<div id="end_1"></div>	<div id="end_2"></div>	<div id="end_3"></div>	<div id="end_4"></div>	<div id="end_5"></div>
+				</div>
+				<div id="button_col_trail" class="button_column">
+					<div id="trail_0"></div>	<div id="trail_1"></div>	<div id="trail_2"></div>	<div id="trail_3"></div>	<div id="trail_4"></div>	<div id="trail_5"></div>
+				</div>
+			</div>
+
+			
+			<div id="frame_panel">
+				<div id="bcPaint1" class="frame">
+						<div id="bcPaint-menu"></div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden></div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden></div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint1_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint1_type2">
+								<input type="text" id="input_type_start" name="bcPaint1_type3">
+								<input type="text" id="input_type_main" name="bcPaint1_type4">
+								<input type="text" id="input_type_end" name="bcPaint1_type5">
+								<input type="text" id="input_type_trail" name="bcPaint1_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container"><canvas id="bcPaintCanvas1"></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden></div>
+						</div>
+						<div id="bcPaint-bottom"><div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div></div>
+				</div>
+				<div id="bcPaint2" class="frame">
+						<div id="bcPaint-menu"></div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden></div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden></div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint2_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint2_type2">
+								<input type="text" id="input_type_start" name="bcPaint2_type3">
+								<input type="text" id="input_type_main" name="bcPaint2_type4">
+								<input type="text" id="input_type_end" name="bcPaint2_type5">
+								<input type="text" id="input_type_trail" name="bcPaint2_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container"><canvas id="bcPaintCanvas2"></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden></div>
+						</div>
+						<div id="bcPaint-bottom"><div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div></div>
+				</div>
+				<div id="bcPaint3" class="frame">
+						<div id="bcPaint-menu"></div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden></div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden></div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint3_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint3_type2">
+								<input type="text" id="input_type_start" name="bcPaint3_type3">
+								<input type="text" id="input_type_main" name="bcPaint3_type4">
+								<input type="text" id="input_type_end" name="bcPaint3_type5">
+								<input type="text" id="input_type_trail" name="bcPaint3_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container"><canvas id="bcPaintCanvas3"></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden></div>
+						</div>
+						<div id="bcPaint-bottom"><div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div></div>
+				</div>
+				<div id="bcPaint4" class="frame">
+						<div id="bcPaint-menu"></div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden></div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden></div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint4_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint4_type2">
+								<input type="text" id="input_type_start" name="bcPaint4_type3">
+								<input type="text" id="input_type_main" name="bcPaint4_type4">
+								<input type="text" id="input_type_end" name="bcPaint4_type5">
+								<input type="text" id="input_type_trail" name="bcPaint4_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container"><canvas id="bcPaintCanvas4"></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden></div>
+						</div>
+						<div id="bcPaint-bottom"><div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div></div>
+				</div>
+
+			</div>
+
+			<div id="calculation_panel">
+				<button type="button">Calculate</button>
+			</div>
+		
+			<div id="footer">
+				<h3>Page 1 of 7</h3>
+				<h3>21 items pending</h3>
+			</div>
+			
+		</div>
+
+		<script type="text/javascript">
+			$('#bcPaint1').bcPaint1();
+			$('#bcPaint2').bcPaint2();
+			$('#bcPaint3').bcPaint3();
+			$('#bcPaint4').bcPaint4();
+		</script>
+		
+
+
+</head>
+<body>
+</html>
