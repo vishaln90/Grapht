@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>jqEye Eyes Follow Cursor Examples</title>
+        <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+        <style type="text/css">
+            body {
+                text-align: center;
+                background-color: #fafafa;
+            }
+.container { margin: 150px auto; max-width: 960px; }
+            div.eyes {
+                width: 160px;
+                height: 60px;
+                margin: 0 auto;
+                position: relative;
+                margin-bottom: 40px;
+            }
+
+            div.left_eye,
+            div.right_eye {
+                width: 60px;
+                height: 60px;
+                top: 0;
+                position: absolute;
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+
+            div.left_eye {
+                left: 0;
+            }
+
+            div.right_eye {
+                right: 0;
+            }
+
+            div.eyes div.pupil {
+                left: 17px;
+                top: 17px;
+                width: 25px;
+                height: 25px;
+                position: relative;
+                background-image: url("pupil.png");
+                background-repeat: no-repeat;
+                background-position: center center;
+            }
+
+            #circular div.left_eye,
+            #circular div.right_eye {
+                background-image: url("circle.png");
+            }
+
+            #ellipse div.left_eye,
+            #ellipse div.right_eye {
+                background-image: url("ellipse.png");
+            }
+
+            #rectangular div.left_eye,
+            #rectangular div.right_eye {
+                background-image: url("square.png");
+            }
+
+            #rounded_rectangular div.left_eye,
+            #rounded_rectangular div.right_eye {
+                background-image: url("rounded_square.png");
+            }
+        </style>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script type="text/javascript" src="jqeye.min.js"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                jQuery("#circular div.pupil").jqEye({shape: "circle", radius:12});
+                jQuery("#ellipse div.pupil").jqEye({shape: "ellipse", width:34, height:14});
+                jQuery("#rectangular div.pupil").jqEye({shape: "rectangle", width:25, height:25});
+                jQuery("#rounded_rectangular div.pupil").jqEye({shape: "rounded rectangle", width:25, height:25, radius:5});
+            });
+        </script>
+    </head>
+    <body><div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="https://www.jqueryscript.net/other/eyes-follow-cursor.html">Download This Plugin</a></li>
+<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul><div id="carbon-block"></div>
+<div class="jquery-script-ads"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+        <div class="container">
+            <h1>jqEye Eyes Follow Cursor Examples</h1>
+
+        <div id="circular" class="eyes">
+            <div class="left_eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="right_eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+
+        <div id="ellipse" class="eyes">
+            <div class="left_eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="right_eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+
+        <div id="rectangular" class="eyes">
+            <div class="left_eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="right_eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+
+        <div id="rounded_rectangular" class="eyes">
+            <div class="left_eye">
+                <div class="pupil"></div>
+            </div>
+            <div class="right_eye">
+                <div class="pupil"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script>
+try {
+  fetch(new Request("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: 'HEAD', mode: 'no-cors' })).then(function(response) {
+    return true;
+  }).catch(function(e) {
+    var carbonScript = document.createElement("script");
+    carbonScript.src = "//cdn.carbonads.com/carbon.js?serve=CK7DKKQU&placement=wwwjqueryscriptnet";
+    carbonScript.id = "_carbonads_js";
+    document.getElementById("carbon-block").appendChild(carbonScript);
+  });
+} catch (error) {
+  console.log(error);
+}
+</script>
+    </body>
+</html>

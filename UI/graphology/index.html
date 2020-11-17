@@ -1,0 +1,129 @@
+<html>
+<head>
+
+
+</head>
+<body>
+	<div id="container">
+		<div id="firstParentImage" onclick="showButtons(this);" style="display:inline-block; border: 1px solid; width:250px; height:250px;">
+				<div id="firstImage" style="padding:9%;">
+					<canvas id="canvas" style="width:200; height:200; border: 1px solid ">
+					  Your browser does not support the canvas element.
+					</canvas>
+					<button id="firstImageResetButton" hidden>Reset</button>
+					<button id="firstImageReviewButton" hidden>Review</button>
+					<button id="firstImageApproveButton" hidden>Approve</button>
+				
+				</div>
+		</div>
+	
+	<div id="secondParentImage" onclick="showButtons(this);" style="position:absolute; display: inline-block; padding-left:2%; border: 1px solid;width:250px; height:250px; margin-left:2%">
+				<div id="secondImage" style="padding:9%;">
+					<canvas id="canvas2" style="width:200; height:200; border: 1px solid ">
+					  Your browser does not support the canvas element.
+					</canvas>
+					<button id="secondImageResetButton" hidden>Reset</button>
+					<button id="secondImageReviewButton" hidden>Review</button>
+					<button id="secondImageApproveButton" hidden>Approve</button>
+				
+				</div>
+			
+	</div>
+	
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext('2d');
+		  
+		var canvas2 = document.getElementById("canvas2");
+		var context2 = canvas2.getContext('2d');
+		  
+		function showButtons(div)
+		{
+				console.log('abc');
+			
+		}
+		
+		function init() {
+			// Load up your image.  Don't attempt to draw it until we know it's been loaded.
+			var handwritting = new Image();
+			handwritting.onload = function() {
+			  canvas.width=this.width;
+			  canvas.height=this.height;
+			  context.drawImage(this, 0, 0);
+			  initPointCollection();
+			}
+			handwritting.src = 'Pic1.png';  // Replace with actual image.
+  
+  
+		  var handwritting2 = new Image();
+			handwritting2.onload = function() {
+			  canvas2.width=this.width;
+			  canvas2.height=this.height;
+			  context2.drawImage(this, 0, 0);
+			  initPointCollection();
+			}
+			handwritting2.src = 'Pic2.png';  // Replace with actual image.
+		}
+		
+		function getCursorPosition(event, canvasElement) {
+			/*var mx, my;
+			if (e.pageX || e.pageY) {
+			  mx = e.pageX;
+			  my = e.pageY;
+			}
+			else {
+			  mx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			  my = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+			}
+			mx -= canvasElement.offsetLeft;
+			my -= canvasElement.offsetTop;*/
+			let rect = canvasElement.getBoundingClientRect(); 
+            let mx = event.clientX - rect.left; 
+            let my = event.clientY - rect.top; 
+            console.log("Coordinate x: " + mx,  
+                        "Coordinate y: " + my); 
+			return {x: mx, y: my};
+		}
+		
+		function drawPath(point, canvasContext) {
+			canvasContext.beginPath();
+			
+			  //context.moveTo(points[i]['x'], points[i]['y']);
+			  //context.lineTo(points[i+1]['x'], points[i+1]['y']);
+			  canvasContext.lineWidth = 3;
+			  canvasContext.strokeStyle = '#FF0000'
+			  canvasContext.arc(point.x, point.y, 5, 0, 2 * Math.PI, false);
+			  if(canvasContext.canvas.id == "canvas2")
+				$('#pointConsole2').append(point.x+","+point.y+"<br/>")
+			  else
+			   $('#pointConsole').append(point.x+","+point.y+"<br/>")
+			  canvasContext.stroke();
+			
+			canvasContext.closePath();
+		}
+		
+		function initPointCollection() {
+			canvas.onclick = function(e) {
+			  var point = getCursorPosition(e,document.getElementById("canvas"));
+			  drawPath(point, document.getElementById("canvas").getContext("2d"));
+			}
+			
+			canvas2.onclick = function(e) {
+			  var point2 = getCursorPosition(e, document.getElementById("canvas2"));
+			  drawPath(point2, document.getElementById("canvas2").getContext("2d"));
+
+			  
+			}
+		}
+		
+		
+  
+  
+
+		  // Should check if document has finished loading first, but I'm too lazy, especially without JQuery.
+		  init();
+	</script>
+</body>
+</html>

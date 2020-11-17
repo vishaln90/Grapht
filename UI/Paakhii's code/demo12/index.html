@@ -1,0 +1,73 @@
+<html>
+<head>
+
+
+</head>
+<body>
+	<canvas id="canvas" width="800" height="600">
+	  Your browser does not support the canvas element.
+	</canvas>
+	
+	<script type="text/javascript">
+  var canvas = document.getElementById("canvas");
+  var context = document.getElementById('canvas').getContext('2d');
+
+  var points = [];
+
+  // Determine where the user clicked, I believe I pulled this from elsewhere on StackOverflow a while ago.
+  function getCursorPosition(e) {
+    var mx, my;
+    if (e.pageX || e.pageY) {
+      mx = e.pageX;
+      my = e.pageY;
+    }
+    else {
+      mx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+      my = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    }
+    mx -= canvas.offsetLeft;
+    my -= canvas.offsetTop;
+    return {x: mx, y: my};
+  }
+
+  // Once we have at least two points, draw a line between them.
+  function drawPath(point) {
+    context.beginPath();
+    
+      //context.moveTo(points[i]['x'], points[i]['y']);
+      //context.lineTo(points[i+1]['x'], points[i+1]['y']);
+	  context.lineWidth = 3;
+	  context.strokeStyle = '#FF0000'
+	  context.arc(point.x, point.y, 5, 0, 2 * Math.PI, false);
+      context.stroke();
+    
+    context.closePath();
+  }
+
+  // Listen for clicks, and redraw the map when they occur.
+  function initPointCollection() {
+    canvas.onclick = function(e) {
+      var point = getCursorPosition(e);
+      points.push(point);
+
+      if (points.length > 1) {
+        drawPath(point);
+      }
+    }
+  }
+
+  function init() {
+    // Load up your image.  Don't attempt to draw it until we know it's been loaded.
+    var handwritting = new Image();
+    handwritting.onload = function() {
+      context.drawImage(this, 0, 0);
+      initPointCollection();
+    }
+    handwritting.src = 'Pic1.png';  // Replace with actual image.
+  }
+
+  // Should check if document has finished loading first, but I'm too lazy, especially without JQuery.
+  init();
+</script>
+</body>
+</html>
