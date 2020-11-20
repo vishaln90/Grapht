@@ -8,9 +8,9 @@
 
 $(document).ready(function(){
 	
-	
-	
-	
+	//alert("here1");
+	$.fn.bcPaint1.countPending();
+	$.fn.bcPaint1.update_pending_sample_status();
 	$.fn.bcPaint1.set_grid();
 	$.fn.bcPaint1.default_color();
 	$.fn.bcPaint1.get_sample();
@@ -51,7 +51,10 @@ $(document).ready(function(){
 
 
 $('body').on('click', '#div_complete', function(){
-		$.fn.bcPaint1.insert_into_db();
+		$.fn.bcPaint1.get_source_image_path_from_sample();
+		$.fn.bcPaint1.insert_into_db(); //update_pending_sample_status
+		$.fn.bcPaint1.update_status_by_id("Complete");
+		//location.reload(true);
 		//$.post('http://localhost:3000/customers/', {email:'abcxx2@abcd.com', name:'abc'});
 	});
 

@@ -17,8 +17,8 @@
 							buttonReset 	: $('<button id="bcPaint-reset">Reset</button>'),
 							buttonSave		: $('<button id="bcPaint-review">Review</button>')
 						},
-		paintCanvas,paintContext,button_id, x,y,height_val,width_val,width_canvas,height_canvas,counter,image_width,image_height,content_type, 
-		sample_id, image_folder_path, image_name;
+		paintCanvas,paintContext,button_id, x_start,y_start,x_end,y_end,width_canvas,height_canvas,counter,image_width,image_height,content_type, 
+		sample_id, image_folder_path, image_name, source_image_full_pathx;
 
 	/**
 	* Assembly and initialize plugin
@@ -55,10 +55,10 @@
 				buttonSave 		= templates.buttonSave.clone(),
 				color;
 
-				x=[];	//y,button_type,type,subtype
-				y=[];
-				height_val=[];
-				width_val=[];	
+				x_start=[];	//y,button_type,type,subtype
+				x_end=[];
+				y_start=[];
+				y_end=[];
 				counter=[];
 				content_type=[], 
 				sample_id=0;
@@ -128,7 +128,8 @@
 						sample_id = data.sample_id;
 						image_folder_path = data.image_folder_path;
 						image_name = data.image_name;
-						$('.bcPaint-image1').css("background-image","url('//" + image_folder_path+image_name + "')");
+						$('#bcPaintCanvas1').css("background-image","url('//" + image_folder_path+image_name + "')");
+						$('#bcPaintCanvas1').css("background-size","100% 100%");
 						$.ajax({
 							url: 'http://localhost:3000/samples/updateStatusById',
 							type: 'PUT',
@@ -143,36 +144,75 @@
 					//alert(sample_id + " " + image_folder_path + " " + image_name);
 		},
 		
+		update_status_by_id : function(inp_status) {		
+					$.ajax({
+							url: 'http://localhost:3000/samples/updateStatusById',
+							type: 'PUT',
+							async : false,
+							data:  {sample_id: sample_id,
+							status: inp_status}
+							});
+		},
+		
+		
+		countPending : function() {		
+		
+					$.get("http://localhost:3000/samples/pendingCount", function(data){
+						//alert("h1");
+						var pending_count = data.PendingCount;
+						//alert(pending_count);
+						$('#pending_count_div').text(pending_count + " pages pending");
+					});
+					
+					//setTimeout(() => {  console.log("World!"); }, 5000);
+					//alert("here");
+					
+					//alert(sample_id + " " + image_folder_path + " " + image_name);
+		},
+		
 		insert_into_db : function() {
 			
-				jQuery.each( x, function( i, val ) {
+				jQuery.each( x_start, function( i, val ) {
+					//alert("source file full path :" + source_image_full_path)
+					y_start_perc = parseFloat(y_start[i])*100/parseFloat(height_canvas);
+					y_end_perc = parseFloat(y_end[i])*100/parseFloat(height_canvas);
 				$.post('http://localhost:3000/lines/', 
 					{
-						sample_id: sample_id, 
+						sample_id: 1, 
 						line_number: counter[i],
 						content_type: content_type[i],
-						y_cordinate_contour: y[i],
-						height_contour: height_val[i],
+						y_start: y_start_perc,
+						y_end: y_end_perc,
 						line_image_path: image_folder_path+"lines/",
 						line_image_name: "sample"+sample_id+"_line"+counter[i]+".jpg",
-						status:"new"
+						status:"new",
+						source_image_full_path: source_image_full_pathx
 					});
 			});
 			
 				$.ajax({
 					  url: 'http://localhost:3000/samples/updateStatusById',
 					  type: 'PUT',
-					  data:  {sample_id: 1,
+					  data:  {sample_id: sample_id,
 						status: "Complete"}
 					});
 		},
 
 		update_pending_sample_status : function() {
-
 					$.ajax({
 						  url: 'http://localhost:3000/samples/updateStatusToNull',
-						  type: 'PUT'
+						  type: 'PUT',
+						  async: false
 						});
+		},
+		
+		get_source_image_path_from_sample : function() {
+					$.ajaxSetup({async: false});
+					$.get("http://localhost:3000/samples/get_source_image_path_from_sample/" + sample_id, 
+							function(data){source_image_full_pathx = data.source_image_full_path; //alert(source_image_full_pathx);
+							}
+						);	
+						//alert("hi");
 		},
 
 
@@ -198,10 +238,10 @@
 
 		reset_all : function(){
 			$.fn.bcPaint1.clearCanvas();		
-			x=[];	//y,button_type,type,subtype
-			y=[];
-			height_val=[];
-			width_val=[];	
+			x_start=[];	//y,button_type,type,subtype
+			y_start=[];
+			x_end=[];
+			y_end=[];	
 			counter=[];
 			$('#bcPaint-mid-right').text("");
 		},
@@ -217,8 +257,8 @@
 			startPoint.y = e.offsetY;
 			//paintContext.beginPath();
 			//paintContext.fillStyle="#00FF00";paintContext.arc(startPoint.x, startPoint.y, 8, 0, 2 * Math.PI,true);paintContext.fill();	
-			x.push((startPoint.x*100/width_canvas));
-			y.push((startPoint.y*100/height_canvas));
+			//x.push((startPoint.x*100/width_canvas));
+			//y.push((startPoint.y*100/height_canvas));
 		},
 
 		/**
@@ -227,27 +267,27 @@
 		onMouseUp : function(e) {
 			
 		    isDragged = false;
-			var contour_width = (parseFloat(e.offsetX) - parseFloat(startPoint.x))*100/parseFloat(width_canvas);
-			var contour_height = (parseFloat(e.offsetY) - parseFloat(startPoint.y))*100/parseFloat(height_canvas);
-			width_val.push(contour_width);
-			height_val.push(contour_height);
+			if (e.offsetX < startPoint.x) {endPoint.x=startPoint.x ; startPoint.x = e.offsetX} else {endPoint.x=e.offsetX}
+			if (e.offsetY < startPoint.y) {endPoint.y=startPoint.y ; startPoint.y = e.offsetY} else {endPoint.y=e.offsetY}
+			x_start.push(startPoint.x);
+			y_start.push(startPoint.y);
+			x_end.push(endPoint.x);
+			y_end.push(endPoint.y);
+			
 			//alert(content_input);
 			content_type.push(content_input);
-			if (contour_width<0) {var temp=x[x.length-1]; temp = temp + width_val[width_val.length-1]; x.pop();x.push(temp); width_val.pop();width_val.push((-1*contour_width));}
-			if (contour_height<0) {var tempy=y[y.length-1]; tempy = tempy + height_val[height_val.length-1]; y.pop();y.push(tempy); height_val.pop();height_val.push((-1*contour_height));}
-			if (counter.length ==0) {counter.push(1);}
-			else {counter.push(counter[counter.length-1]+1);}
+			if (counter.length ==0) {counter.push(1);} else {counter.push(counter[counter.length-1]+1);}
 			
-			x.pop();x.push(2);
-			width_val.pop(); width_val.push(98); 
+			x_start.pop();x_start.push(4);
+			x_end.pop(); x_end.push(width_canvas*0.98); 
 			
 			var div_text = $('#bcPaint-mid-right').text();
-			var current_text = div_text +"\n\n\n----------------\n\n\n" + content_type[content_type.length-1] + " " + counter[counter.length-1] + " : " + x[x.length-1]+","+y[y.length-1]+","+width_val[width_val.length-1]+","+height_val[height_val.length-1];
+			var current_text = div_text +"\n\n\n----------------\n\n\n" + content_type[content_type.length-1] + " " + counter[counter.length-1] + " : " + x_start[x_start.length-1]+","+y_start[y_start.length-1]+","+x_end[x_end.length-1]+","+y_end[y_end.length-1];
 			$('#bcPaint-mid-right').text(current_text);
 			//bcPaint-mid-right
-			//alert(x.length);alert(height_val.length);
+
 			$.fn.bcPaint1.outline_blocks();
-			if (contour_width==0 || contour_height==00) {$.fn.bcPaint1.undo_function();}
+			if (endPoint.y-startPoint.y < 0.01 * height_canvas) {$.fn.bcPaint1.undo_function();}
 			
 			},
 		
@@ -285,40 +325,36 @@
 			$.fn.bcPaint1.clearCanvas();
 			$('#bcPaint-mid-right').text("");
 			var current_text =""
-			jQuery.each( x, function( i, val ) {
-				//alert(x[i]+"-"+y[i]+"-"+width_val[i]+"-"+ height_val[i]);
+			jQuery.each( x_start, function( i, val ) {
+				
 					paintContext.beginPath();
 					paintContext.lineWidth = 0.3;
 					if (content_type[i]=="Line") {paintContext.strokeStyle = "red";} else {paintContext.strokeStyle = "purple";}
-					paintContext.rect(x[i]*width_canvas/100,y[i]*height_canvas/100,width_val[i]*width_canvas/100, height_val[i]*height_canvas/100);
+					paintContext.rect(x_start[i],y_start[i],parseFloat(x_end[i])-parseFloat(x_start[i]), parseFloat(y_end[i])-parseFloat(y_start[i]));
 					paintContext.stroke();
 					
-					current_text = current_text + " <br/> " + content_type[i] + " " + counter[i] + " : " + x[i].toFixed(2) +",  "+y[i].toFixed(2) +",  "+width_val[i].toFixed(2) +",  " + height_val[i].toFixed(2);
+					current_text = current_text + " <br/> " + content_type[i] + " " + counter[i] + " : " + x_start[i].toFixed(2) +",  "+y_start[i].toFixed(2) +",  "+x_end[i].toFixed(2) +",  " + y_end[i].toFixed(2);
 					$('#bcPaint-mid-right').html(current_text);
 					paintContext.beginPath();
 					if (content_type[i]=="Line") {paintContext.fillStyle = "red";} else {paintContext.fillStyle = "purple";}
 					paintContext.font = "20px Arial";
-					paintContext.fillText((content_type[i]).substring(0, 1) + counter[i], 3, ((parseFloat(y[i])+parseFloat(height_val[i])/2)*height_canvas/100));
+					paintContext.fillText((content_type[i]).substring(0, 1) + counter[i], 1, y_start[i]);
 					//alert((parseFloat(y[i])+parseFloat(height_val[i]))*height_canvas/200);
-			}
-
-			)
+			})
 		},
 		
 		undo_function : function(){
 			$.fn.bcPaint1.clearCanvas();
 			
 			
-			x.pop();
-			y.pop();
-			height_val.pop();
-			width_val.pop();
+			x_start.pop();
+			y_start.pop();
+			x_end.pop();
+			y_end.pop();
 			content_type.pop();
 			$.fn.bcPaint1.outline_blocks();
 		
 			
-			
-			//alert(x.length+","+y.length+","+type.length+","+subtype.length+","+button_type.length)
 			//alert("check");
 		},
 

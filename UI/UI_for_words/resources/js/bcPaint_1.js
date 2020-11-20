@@ -19,8 +19,8 @@
 							buttonSave		: $('<button id="bcPaint-review">Review</button>')
 						},
 		paintCanvas,
-		paintContext,button_id, x,y,height_val,width_val,width_canvas,height_canvas,counter,image_width,image_height, content_type,
-		sample_id,line_number,y_cordinate_contour,height_contour,line_content_type,line_image_path,line_image_name,word_value;
+		paintContext,button_id, x_start,y_start,x_end,y_end,width_canvas,height_canvas,counter,image_width,image_height, content_type,
+		sample_id,line_number,line_y_start,line_x_start,height_contour,line_content_type,line_image_path,line_image_name,word_value,source_image_full_path;
 		
 		
 		
@@ -51,10 +51,10 @@
 				buttonSave 		= templates.buttonSave.clone(),
 				color;
 
-				x=[];	//y,button_type,type,subtype
-				y=[];
-				height_val=[];
-				width_val=[];	
+				x_start=[];	//y,button_type,type,subtype
+				y_start=[];
+				x_end=[];
+				y_end=[];	
 				counter=[];
 				content_type=[];
 				word_value=[];
@@ -65,12 +65,21 @@
 			bcCanvas.attr('width', bcCanvasContainer.width());
 			bcCanvas.attr('height', bcCanvasContainer.height());
 
+			//$('#bcPaintCanvas1').css("width","100%");
+			//$('#bcPaintCanvas1').css("height","100%");
 			// get canvas pane context
 			paintCanvas = document.getElementById('bcPaintCanvas1');
 			paintContext = paintCanvas.getContext('2d');
+			
+			
+			
+			
 	
+			//width_canvas = $('.bcPaint-image1').width();//paintCanvas.width;
+			//height_canvas = $('.bcPaint-image1').height();//paintCanvas.height;
 			width_canvas = paintCanvas.width;
 			height_canvas = paintCanvas.height;
+			//alert($('#bcPaint1').find('#bcPaint-canvas-container').width() + " vs " + width_canvas);
 			//alert(height_canvas);
 
 			// bind mouse actions
@@ -90,17 +99,17 @@
 			});
 
 			// Prevent scrolling on touch event
-			document.body.addEventListener("touchstart", function (e) {
+			document.body_start.addEventListener("touchstart", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
 			}, false);
-			document.body.addEventListener("touchend", function (e) {
+			document.body_start.addEventListener("touchend", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
 			}, false);
-			document.body.addEventListener("touchmove", function (e) {
+			document.body_start.addEventListener("touchmove", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
@@ -116,62 +125,71 @@
 		/**
 		* Dispatch mouse event
 		*/
-		
+		get_source_image_path_from_sample : function() {
+					$.ajaxSetup({async: false});
+					$.get("http://localhost:3000/samples/get_source_image_path_from_sample/" + sample_id, 
+							function(data){source_image_full_path = data.source_image_full_path; //alert(source_image_full_pathx);
+							}
+						);	
+		},
 		
 		get_sample : function() {	
 					$.ajaxSetup({async: false}); 
 					$.get("http://localhost:3000/lines", function(data){
 						sample_id = data.sample_id;
 						line_number = data.line_number;
-						y_cordinate_contour = data.y_cordinate_contour;
-						height_contour = data.height_contour;
+						line_y_start = data.y_start;
+						line_y_end = data.y_end;
 						line_image_path = data.line_image_path;
 						line_image_name = data.line_image_name;
 
-						$.ajax({
-							url: 'http://localhost:3000/lines/updateStatusById',
-							async : false,
-							type: 'PUT',
-							data:  {sample_id: sample_id,
-							line_number: line_number,
-							status: "In-progress"}
-							});
-						$('.bcPaint-image1').css("background-image","url('//" + line_image_path + line_image_name + "')");
-						$('.bcPaint-image1').css("background-size","100% 100%");
+						$('#bcPaintCanvas1').css("background-image","url('//" + line_image_path + line_image_name + "')");
+						$('#bcPaintCanvas1').css("background-size","100% 100%");
+						$.fn.bcPaint1.update_line_status("In-progress");
 					});
 		},
 		
 		insert_into_db : function() {
+				var line_height = parseFloat(line_y_end)-parseFloat(line_y_start);
+				jQuery.each(x_start, function( i, val ) {
+					var y_start_prop_this_clip = parseFloat(y_start[i])/parseFloat(height_canvas);
+					var y_start_prop_total = parseFloat(line_y_start)+parseFloat(y_start_prop_this_clip)*(parseFloat(line_y_end)-parseFloat(line_y_start));
+					var y_end_prop_this_clip = parseFloat(y_end[i])/parseFloat(height_canvas);
+					var y_end_prop_total = parseFloat(line_y_start)+parseFloat(y_end_prop_this_clip)*(parseFloat(line_y_end)-parseFloat(line_y_start));
+					x_start_perc = parseFloat(x_start[i])*100/parseFloat(width_canvas);
+					x_end_perc = parseFloat(x_end[i])*100/parseFloat(width_canvas);
+					
+					$.post('http://localhost:3000/words/', 
+						{
+							sample_id: sample_id, 
+							line_number: line_number,
+							word_number: counter[i],
+							word_value: word_value[i],
+							type_of_word: content_type[i],
+							x_start: x_start_perc,
+							y_start: y_start_prop_total,
+							x_end: x_end_perc,
+							y_end: y_end_prop_total,
+							word_image_path: line_image_path.replace("/lines/","/words/"),
+							word_image_name:"sample"+sample_id+"_line"+line_number+"_word"+counter[i]+".jpg",
+							status:"new",
+							source_image_full_path: source_image_full_path
+						});
+				});
 			
-				jQuery.each( x, function( i, val ) {
-								
-				$.post('http://localhost:3000/words/', 
-					{
-						sample_id: sample_id, 
-						line_number: line_number,
-						word_number: counter[i],
-						word_value: word_value[i],
-						type_of_word: content_type[i],
-						x_cordinate_contour: x[i],
-						y_cordinate_contour: y[i],
-						width_contour: width_val[i],
-						height_contour: height_val[i],
-						word_image_path: line_image_path.replace("/lines/","/words/"),
-						word_image_name:"sample"+sample_id+"_line"+line_number+"_word"+counter[i]+".jpg",
-						status:"new"
-					});
-			});
-			
-				$.ajax({
-					  url: 'http://localhost:3000/lines/updateStatusById',
-					  type: 'PUT',
-					  data:  {sample_id: 1,
-						line_number: line_number,
-						status: "Complete"}
-					});
+				$.fn.bcPaint1.update_line_status("Complete");
 		},
 		
-		
+		update_line_status : function(input_status) {
+				$.ajax({
+					url: 'http://localhost:3000/lines/updateStatusToNull',
+					type: 'PUT',
+					async : false,
+					data:  {sample_id: sample_id,
+						line_number: line_number,
+						status: input_status}
+					});	
+		},
 		
 		dispatchMouseEvent : function(e, mouseAction){
 			var touch = e.touches[0];
@@ -190,21 +208,25 @@
 		*/
 		clearCanvas : function(){
 			paintCanvas.width = paintCanvas.width;
+			$('#bcPaintCanvas1').css("background-image","url('//" + line_image_path + line_image_name + "')");
+			$('#bcPaintCanvas1').css("background-size","100% 100%");
 			$.fn.bcPaint1.set_grid();	
 			//$('#bcPaint-header').find('div').removeClass('selected_content_type');
 			//$('#bcPaint-header').find('#normal').addClass('selected_content_type');		
 		},
 
 		reset_all : function(){
+			$.fn.bcPaint1.reset_content_type();	
 			$.fn.bcPaint1.clearCanvas();		
-			x=[];	//y,button_type,type,subtype
-			y=[];
-			height_val=[];
-			width_val=[];	
+			x_start=[];	//y,button_type,type,subtype
+			y_start=[];
+			x_end=[];
+			y_end=[];	
 			counter=[];
-			content_type=[]
+			content_type=[];
+			word_value=[];
 			$('#calc1').text("");
-			$.fn.bcPaint1.reset_content_type();		
+				
 		},
 		
 		/**
@@ -220,8 +242,8 @@
 				startPoint.y = e.offsetY;
 				//paintContext.beginPath();
 				//paintContext.fillStyle="#00FF00";paintContext.arc(startPoint.x, startPoint.y, 8, 0, 2 * Math.PI,true);paintContext.fill();	
-				x.push((startPoint.x*100/width_canvas));
-				y.push((startPoint.y*100/height_canvas));
+				//x_start.push((startPoint.x*100/width_canvas));
+				//y_start.push((startPoint.y*100/height_canvas));
 			}
 		},
 
@@ -231,37 +253,32 @@
 		onMouseUp : function(e) {
 			
 		    isDragged = false;
-			
-		    //alert(e.offsetY);
-		    if (e.offsetX > startPoint.x) {endPoint.x = e.offsetX;} else {endPoint.x = startPoint.x; startPoint.x=e.offsetX;x.pop();x.push((startPoint.x*100/width_canvas));}
-		    if (e.offsetY > startPoint.y) {endPoint.y = e.offsetY;} else {endPoint.y = startPoint.y; startPoint.y=e.offsetY;y.pop();y.push((startPoint.y*100/height_canvas));}
-			var contour_width = (parseFloat(endPoint.x) - parseFloat(startPoint.x))*100/parseFloat(width_canvas);
-			var contour_height = (parseFloat(endPoint.y) - parseFloat(startPoint.y))*100/parseFloat(height_canvas);
-			width_val.push(contour_width);
-			height_val.push(contour_height);
+			if (e.offsetX < startPoint.x) {endPoint.x=startPoint.x ; startPoint.x = e.offsetX} else {endPoint.x=e.offsetX}
+			if (e.offsetY < startPoint.y) {endPoint.y=startPoint.y ; startPoint.y = e.offsetY} else {endPoint.y=e.offsetY}
+			x_start.push(startPoint.x);
+			y_start.push(startPoint.y);
+			x_end.push(endPoint.x);
+			y_end.push(endPoint.y);
 			
 			var selected_content_id = $('#bcPaint1').find('.selected_content_type').attr('id');
 			content_type.push(selected_content_id);
-
-			//if (contour_width<0) {var temp=x[x.length-1]; temp = temp + width_val[width_val.length-1]; x.pop();x.push(temp); width_val.pop();width_val.push((-1*contour_width));}
-			//if (contour_height<0) {var tempy=y[y.length-1]; tempy = tempy + height_val[height_val.length-1]; y.pop();y.push(tempy); height_val.pop();height_val.push((-1*contour_height));}
-						
+			
 			if (counter.length ==0) {counter.push(1);} else {counter.push(counter[counter.length-1]+1);}
 			
 			var line_text = $('#word_text').val();
+			//alert(line_text);
 			line_text = line_text.replace("  "," ");
 			line_text = line_text.split(" ");
-			word_value.push(line_text[counter.length-1]);
-			
-			//bcPaint-mid-right
-			//alert(x.length);alert(height_val.length);
-			if (contour_width==0 || contour_height==0) {$.fn.bcPaint1.undo_function();}
-			//alert(counter.length + " " + line_text.length);
-			
-			if (word_value[counter.length-1] == "" || counter.length > line_text.length) {alert("Please ensure that the line entered in the input box is correct.");$.fn.bcPaint1.undo_function();}
-			$.fn.bcPaint1.outline_blocks();
-			
-			
+		if(jQuery.type(line_text[counter.length-1]) == "undefined" || line_text[counter.length-1] == "" )
+				{alert("Please enter this line in input box correctly."); word_value.push("dummy_value");$.fn.bcPaint1.undo_function();}
+			else
+				{
+					word_value.push(line_text[counter.length-1]);
+					if (endPoint.x-startPoint.x < 0.01 * width_canvas || endPoint.y-startPoint.y < 0.01 * height_canvas) {$.fn.bcPaint1.undo_function();}
+					if (word_value[counter.length-1] == "" || counter.length > line_text.length) 
+						{alert("Please ensure that the line entered in the input box is correct.");$.fn.bcPaint1.undo_function();}
+					$.fn.bcPaint1.outline_blocks();
+				}
 			},
 
 		onMouseMove : function(e){
@@ -301,14 +318,12 @@
 		},
 
 		outline_blocks : function() {
-			try {
-
-			
 			$.fn.bcPaint1.clearCanvas();
 			$('#bcPaint-mid-right').text("");
-			var current_text =""
-			jQuery.each( x, function( i, val ) {
-				//alert(x[i]+"-"+y[i]+"-"+width_val[i]+"-"+ height_val[i]);
+			var current_text ="";
+			
+			jQuery.each(x_start, function( i, val ) {
+				//alert(x_start[i]+"-"+y_start[i]+"-"+x_end[i]+"-"+ y_end[i]);
 					paintContext.beginPath();
 
 					if(content_type[i] == 'normal') {paintContext.strokeStyle = "red";}
@@ -318,13 +333,13 @@
 					if(content_type[i] == 'indicated_superscript') {paintContext.strokeStyle = "orange";$.fn.bcPaint1.reset_content_type();}				
 
 					paintContext.lineWidth = 0.3;
-					if (content_type_updated && i == (x.length-1)) {paintContext.lineWidth = 3;content_type_updated = false}
+					if (content_type_updated && i == (x_start.length-1)) {paintContext.lineWidth = 3;content_type_updated = false}
 					
-					paintContext.rect(x[i]*width_canvas/100,y[i]*height_canvas/100,width_val[i]*width_canvas/100, height_val[i]*height_canvas/100);
+					paintContext.rect(x_start[i],y_start[i],parseFloat(x_end[i])-parseFloat(x_start[i]), parseFloat(y_end[i])-parseFloat(y_start[i]));
 					
 					paintContext.stroke();
 					
-					current_text = current_text + " <br/> " + "Word" + counter[i] + " : " + word_value[i] + " ->> "+ x[i].toFixed(1) +",  "+y[i].toFixed(1) +",  "+width_val[i].toFixed(1) +",  " + height_val[i].toFixed(1);
+					current_text = current_text + " <br/> " + "Word" + counter[i] + " : " + word_value[i] + " ->> "+ x_start[i].toFixed(1) +",  "+y_start[i].toFixed(1) +",  "+x_end[i].toFixed(1) +",  " + y_end[i].toFixed(1);
 					$('#calc1').html(current_text);
 					paintContext.beginPath();
 					if(content_type[i] == 'normal') {paintContext.fillStyle = "red";}
@@ -333,36 +348,29 @@
 					if(content_type[i] == 'implied_superscript') {paintContext.fillStyle = "purple";}
 					if(content_type[i] == 'indicated_superscript') {paintContext.fillStyle = "orange";}	
 					paintContext.font = "20px Arial";
-					paintContext.fillText(counter[i], (parseFloat(x[i])-parseFloat(width_val[i])/4)*width_canvas/100, (parseFloat(y[i])+parseFloat(height_val[i])/4)*height_canvas/100);
-					//alert((parseFloat(y[i])+parseFloat(height_val[i]))*height_canvas/200);
-			}
-
-			)
-			}
-			catch(err) {
-				isDragged=false;
-				alert("Error found. Please restart marking for this line.")
-  				$.fn.bcPaint1.reset_all();
-			}
+					paintContext.fillText(counter[i], parseFloat(x_start[i])*0.98, parseFloat(y_start[i])*0.98);
+					//alert((parseFloat(y_start[i])+parseFloat(y_end[i]))*height_canvas/200);
+			});
 		},
 
 		undo_function : function(){
 			$.fn.bcPaint1.clearCanvas();
-			x.pop();
-			y.pop();
-			height_val.pop();
-			width_val.pop();
+			x_start.pop();
+			y_start.pop();
+			y_end.pop();
+			x_end.pop();
 			content_type.pop();
 			word_value.pop();
 			counter.pop();
+			
 			//$.fn.bcPaint1.outline_blocks();
 
-			//alert(x.length+","+y.length+","+type.length+","+subtype.length+","+button_type.length)
+			//alert(x_start.length+","+y_start.length+","+type.length+","+subtype.length+","+button_type.length)
 			//alert("check");
 		},
 
 		set_content_type : function(){
-			if (x.length > 0) {
+			if (x_start.length > 0) {
 				var selected_content_id = $('#bcPaint1').find('.selected_content_type').attr('id');
 				//alert(selected_content_id);
 				content_type.pop();
