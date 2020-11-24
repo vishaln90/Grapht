@@ -9,7 +9,7 @@ $(document).ready(function(){
 
 	$.fn.bcPaint1.update_line_status("new");
 	$.fn.bcPaint1.get_sample();
-	$.fn.bcPaint2.get_sample();
+	//$.fn.bcPaint2.get_sample();
 	
 	$('#word_text').val("");
 	
@@ -88,6 +88,8 @@ $(document).ready(function(){
 	$('body').on('click', '#div_complete', function(){
 		//alert("Complete clicked");
 			$.fn.bcPaint1.get_source_image_path_from_sample();
-			$.fn.bcPaint1.insert_into_db();			
+			$.fn.bcPaint1.insert_into_db();		
+			alert("reload");
+			location.reload(true);			
 		});
 });

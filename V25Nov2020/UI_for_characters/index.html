@@ -1,0 +1,532 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Basic Canvas Paint Plugin Example</title>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.css"/>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.mobile.css"/>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="resources/js/bcPaint_default.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_1.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_2.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_3.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_4.js"></script>
+		<style type="text/css">
+			*{
+			  margin: 0;
+			  padding: 0;
+			  list-style: none;
+			}
+
+			body{
+			  font-family: "proxima-nova-soft", "Proxima Nova Soft", Helvetica, Arial, sans-serif;
+			  background-color: #f9f9f9;
+			}
+
+			#container{
+			  width: 100%;
+			  !height: 100%;
+			  height: 800px;
+			  max-width: 1960px;
+			  margin: auto;
+			  background-color: #ffffff;
+			  position: relative;
+			}
+
+			#container h5{
+			  font-size: 12px;
+			  font-weight: 400;
+			  text-transform: uppercase;
+			  margin-top: 40px;
+			  margin-bottom: 10px;
+			}
+
+			#container h4{
+			  font-size: 12px;
+			  font-weight: 300;
+			}
+
+			#container h3{
+			  font-size: 16px;
+			  font-weight: 400;
+			  margin: 10px 0;
+			}
+
+			#container > #header{
+			  background-color: #313131;
+			  color: #e8e8e8;
+			  text-align: center;
+			  width: 100%;
+			  padding: 20px 0;
+			  height:50px;
+			}
+
+			#container > #button_panel{
+			  height: 750px;
+			  width:500px;
+			  padding:0px;
+			  display:inline-block;
+			  border: 1px solid blue;
+				background-color: yellow;
+				float: left;
+				padding: 20px 0px 0px 10px;
+			}
+
+			#container > #frame_panel{
+			  height: 750px;
+			  width: 900px;
+			  padding: 0px 0px 0px 50px;
+			  display:inline-block;
+			}
+						
+			#container > #calculation_panel{
+			  height: 750px;
+			  width:350px;
+			  padding: 0px 0px 0px 10px;
+			  display:inline-block;
+				background-color: pink;
+				float: right;
+			}
+			.button_column{
+			  display:inline-block;
+			  height: 100%;
+			  width:11%;
+			  padding:0px 0px 0px 0px;
+			  margin-left:0px;
+			  margin-top:0px;
+			  !border: 1px solid blue;
+			  
+			}
+			
+			.button_column > div{
+			width: 90%;
+			margin-top:30px;
+			margin-left: auto;
+			margin-right: auto;
+			border: 1px solid green;
+			border-radius: 20%;
+			}
+			#button_col_main
+			{
+				margin-left: 5%;
+			}
+			#button_col_main_sub
+			{
+				width:9%;
+			}
+			#button_col_main_additional
+			{
+				width:9%;
+				margin-right: 3%;
+			}
+
+			
+			#bcPaint-input-div{
+			width:55%;
+			height:70%;
+			display:inline-block;
+			float:right;
+			}
+			
+			input {
+			width:10%;
+			height:100%;
+			margin-left:0px;
+			margin-top:3px;
+			display:inline-block;
+			text-align:center;
+			visibility:hidden;
+			}
+			#input_type_lead2{
+			width:18%;
+			}
+			#input_type_main{
+			width:18%;
+			}
+			canvas{
+			!background: transparent;	
+			}	
+			
+			.bcPaint-image1{
+			background-size: 100% 100%;
+			}
+			.bcPaint-image2{
+			background-size: 100% 100%;
+			}
+			.bcPaint-image3{
+			background-size: 100% 100%;
+			}
+			.bcPaint-image4{
+			background-size: 100% 100%;
+			}
+			
+			#div_undo{
+			background-image: url('vectors/undo.png');
+			background-size: 100% 100%;
+			}
+			#div_redo{
+			background-image: url('vectors/redo.png');
+			background-size: 100% 100%;
+			}
+			#div_complete{
+			background-image: url('vectors/tick.png');
+			background-size: 100% 100%;
+			}
+			#div_cancel{
+			background-image: url('vectors/cross.png');
+			background-size: 100% 100%;
+			}
+			
+			#bcPaint-right > div{
+			height:18%;
+			width:80%;	
+			margin-top:5px;
+			float:right;
+			!border: 1px solid green;			
+			}
+			
+			#zoom_1{
+			background-image: url('vectors/zoom deep.png');
+			background-size: 100% 100%;
+			}
+			#zoom_2{
+			background-image: url('vectors/zoom deeper.png');
+			background-size: 100% 100%;
+			}
+			
+			#type_of_buttons > div{
+				width: 15%;
+				height: 90%;
+				float: left; 
+				margin-left:5px;
+				!border: 1px solid red;
+				display:inline-block;
+				visibility:hidden;			
+				}
+				
+			.button-type-selected {
+				border: 2px solid red;
+			}
+			
+			#normal{
+			background-image: url('vectors/normal.png');
+			background-size: 100% 100%;
+			}
+			#pointy{
+			background-image: url('vectors/pointy.png');
+			background-size: 100% 100%;
+			}
+			#intersect{
+			background-image: url('vectors/intersect.png');
+			background-size: 100% 100%;
+			}
+			#disconnect{
+			background-image: url('vectors/disconnect.png');
+			background-size: 100% 100%;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<h3>Basic Canvas Paint</h3>
+				<h4>Draw, E-Sign and Export</h4>
+			</div>
+			<div id="button_panel">
+				<div id="button_col_lead1" class="button_column lead_buttons">
+					<div id="-" class="lead1_0"></div>	<div id="lead1_s" class="lead1_s"></div>	<div id="lead1_n" class="lead1_n"></div>	<div id="lead1_c" class="lead1_c"></div>	<div id="lead1_w" class="lead1_w"></div>
+				</div>
+				<div id="button_col_lead2" class="button_column lead_buttons">
+					<div id="-" class="lead2_0" class="lead2_0"></div>	<div id="lead2_bow" class="lead2_bow"></div>	<div id="lead2_hood" class="lead2_hood"></div>	<div id="lead2_lift" class="lead2_lift"></div>	<div id="lead2_direct" class="lead2_direct"></div>	
+				</div>
+				<div id="button_col_start" class="button_column main_buttons">
+					<div id="start_0" class="start_0"></div>	<div id="start_n" class="start_1"></div>	<div id="start_r" class="start_2"></div>	<div id="start_l" class="start_3"></div>	<div id="start_a" class="start_4"></div>	
+				</div>
+				<div id="button_col_main" class="button_column main_buttons">
+					<div id="main_e0" class="main_e0"></div>	<div id="main_e1" class="main_e1"></div>	<div id="main_e2" class="main_e2"></div>
+				</div>
+				<div id="button_col_main_sub" class="button_column main_buttons">
+					<div id="1" class="button_col_main_sub_1"></div>	<div id="2" class="button_col_main_sub_2"></div>	<div id="3" class="button_col_main_sub_3"></div>
+				</div>
+				<div id="button_col_main_additional" class="button_column main_buttons">
+					<div id="loop" class="button_col_main_additional_loop"></div>	<div id="retrace" class="button_col_main_additional_retrance"></div>
+				</div>
+				<div id="button_col_end" class="button_column main_buttons">
+					<div id="end_0" class="end_0"></div>	<div id="end_1" class="end_1"></div>
+				</div>
+				<div id="button_col_trail" class="button_column">
+					<div id="trail_0" class="trail_0"></div>	<div id="trail_th" class="trail_thread"></div> <div id="trail_b" class="trail_balerina"></div>
+				</div>
+			</div>
+
+			
+			<div id="frame_panel">
+				<div id="bcPaint1" class="frame">
+						<div id="bcPaint-menu"> 
+							<div id="drop_down_previous" class="bcPaint-menu_left">
+									<select id="dropdown_previous_letter" name="dropdown_previous" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_previous">Connected</option>
+										<option value="disconnected_with_previous">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_undo" class="bcPaint-menu_left"></div>
+							<div id="drop_down_next" class="bcPaint-menu_right" style="border: 1px solid green;">
+									<select id="dropdown_next_letter" name="dropdown_next" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_next">Connected</option>
+										<option value="disconnected_with_next">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_complete" class="bcPaint-menu_right"></div>
+							<div id="div_cancel" class="bcPaint-menu_right"></div>
+						</div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden>
+									<div id="type_lead" class="bcPaint_palette_color selected_type" style="background-color: rgb(255, 255, 0); visibility: visible;">l</div>
+									<div id="type_start" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">s</div>
+									<div id="type_main" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">?</div>
+									<div id="type_end" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">e</div>
+									<div id="type_trail" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">t</div>
+								</div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden>
+									<div id="subtype_1" class="bcPaint_palette_color_subtype selected_subtype" style="background-color: rgb(199, 129, 0); visibility: visible;">1</div>
+									<div id="subtype_2" class="bcPaint_palette_color_subtype" style="background-color: rgb(255, 180, 41); visibility: visible;">2</div>
+								</div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint1_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint1_type2">
+								<input type="text" id="input_type_start" name="bcPaint1_type3">
+								<input type="text" id="input_type_main" name="bcPaint1_type4">
+								<input type="text" id="input_type_end" name="bcPaint1_type5">
+								<input type="text" id="input_type_trail" name="bcPaint1_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container" class="bcPaint-image1"><canvas id="bcPaintCanvas1" class="bcPaintfunctionality" hidden></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden>
+								<div id="zoom_1"></div>
+								<div id="zoom_2"></div>
+							</div>
+						</div>
+						<div id="bcPaint-bottom">
+							<div id="type_of_buttons" class="bcPaintfunctionality" hidden>
+								<div id="normal" class="class_buttontype button-type-selected"></div>
+								<div id="pointy" class="class_buttontype"></div>
+								<div id="intersect" class="class_buttontype"></div>
+								<div id="disconnect" class="class_buttontype"></div>
+							</div>
+							<div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div>
+						</div>
+				</div>
+				<div id="bcPaint2" class="frame">
+						<div id="bcPaint-menu"> 
+							<div id="drop_down_previous" class="bcPaint-menu_left">
+									<select id="dropdown_previous_letter" name="dropdown_previous" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_previous">Connected</option>
+										<option value="disconnected_with_previous">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_undo" class="bcPaint-menu_left"></div>
+							<div id="drop_down_next" class="bcPaint-menu_right" style="border: 1px solid green;">
+									<select id="dropdown_next_letter" name="dropdown_next" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_next">Connected</option>
+										<option value="disconnected_with_next">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_complete" class="bcPaint-menu_right"></div>
+							<div id="div_cancel" class="bcPaint-menu_right"></div>
+						</div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden>
+									<div id="type_lead" class="bcPaint_palette_color selected_type" style="background-color: rgb(255, 255, 0); visibility: visible;">l</div>
+									<div id="type_start" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">s</div>
+									<div id="type_main" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">?</div>
+									<div id="type_end" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">e</div>
+									<div id="type_trail" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">t</div>
+								</div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden>
+									<div id="subtype_1" class="bcPaint_palette_color_subtype selected_subtype" style="background-color: rgb(199, 129, 0); visibility: visible;">1</div>
+									<div id="subtype_2" class="bcPaint_palette_color_subtype" style="background-color: rgb(255, 180, 41); visibility: visible;">2</div>
+								</div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint2_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint2_type2">
+								<input type="text" id="input_type_start" name="bcPaint2_type3">
+								<input type="text" id="input_type_main" name="bcPaint2_type4">
+								<input type="text" id="input_type_end" name="bcPaint2_type5">
+								<input type="text" id="input_type_trail" name="bcPaint2_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container" class="bcPaint-image2"><canvas id="bcPaintCanvas2" class="bcPaintfunctionality" hidden></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden>
+								<div id="zoom_1"></div>
+								<div id="zoom_2"></div>
+							</div>
+						</div>
+						<div id="bcPaint-bottom">
+							<div id="type_of_buttons" class="bcPaintfunctionality" hidden>
+								<div id="normal" class="class_buttontype button-type-selected"></div>
+								<div id="pointy" class="class_buttontype"></div>
+								<div id="intersect" class="class_buttontype"></div>
+								<div id="disconnect" class="class_buttontype"></div>
+							</div>
+							<div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div>
+						</div>
+				</div>
+				<div id="bcPaint3" class="frame">
+						<div id="bcPaint-menu"> 
+							<div id="drop_down_previous" class="bcPaint-menu_left">
+									<select id="dropdown_previous_letter" name="dropdown_previous" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_previous">Connected</option>
+										<option value="disconnected_with_previous">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_undo" class="bcPaint-menu_left"></div>
+							<div id="drop_down_next" class="bcPaint-menu_right" style="border: 1px solid green;">
+									<select id="dropdown_next_letter" name="dropdown_next" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_next">Connected</option>
+										<option value="disconnected_with_next">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_complete" class="bcPaint-menu_right"></div>
+							<div id="div_cancel" class="bcPaint-menu_right"></div>
+						</div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden>
+									<div id="type_lead" class="bcPaint_palette_color selected_type" style="background-color: rgb(255, 255, 0); visibility: visible;">l</div>
+									<div id="type_start" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">s</div>
+									<div id="type_main" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">?</div>
+									<div id="type_end" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">e</div>
+									<div id="type_trail" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">t</div>
+								</div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden>
+									<div id="subtype_1" class="bcPaint_palette_color_subtype selected_subtype" style="background-color: rgb(199, 129, 0); visibility: visible;">1</div>
+									<div id="subtype_2" class="bcPaint_palette_color_subtype" style="background-color: rgb(255, 180, 41); visibility: visible;">2</div>
+								</div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint3_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint3_type2">
+								<input type="text" id="input_type_start" name="bcPaint3_type3">
+								<input type="text" id="input_type_main" name="bcPaint3_type4">
+								<input type="text" id="input_type_end" name="bcPaint3_type5">
+								<input type="text" id="input_type_trail" name="bcPaint3_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container" class="bcPaint-image3"><canvas id="bcPaintCanvas3" class="bcPaintfunctionality" hidden></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden>
+								<div id="zoom_1"></div>
+								<div id="zoom_2"></div>
+							</div>
+						</div>
+						<div id="bcPaint-bottom">
+							<div id="type_of_buttons" class="bcPaintfunctionality" hidden>
+								<div id="normal" class="class_buttontype button-type-selected"></div>
+								<div id="pointy" class="class_buttontype"></div>
+								<div id="intersect" class="class_buttontype"></div>
+								<div id="disconnect" class="class_buttontype"></div>
+							</div>
+							<div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div>
+						</div>
+				</div>
+				<div id="bcPaint4" class="frame">
+						<div id="bcPaint-menu"> 
+							<div id="drop_down_previous" class="bcPaint-menu_left">
+									<select id="dropdown_previous_letter" name="dropdown_previous" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_previous">Connected</option>
+										<option value="disconnected_with_previous">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_undo" class="bcPaint-menu_left"></div>
+							<div id="drop_down_next" class="bcPaint-menu_right" style="border: 1px solid green;">
+									<select id="dropdown_next_letter" name="dropdown_next" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_next">Connected</option>
+										<option value="disconnected_with_next">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_complete" class="bcPaint-menu_right"></div>
+							<div id="div_cancel" class="bcPaint-menu_right"></div>
+						</div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden>
+									<div id="type_lead" class="bcPaint_palette_color selected_type" style="background-color: rgb(255, 255, 0); visibility: visible;">l</div>
+									<div id="type_start" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">s</div>
+									<div id="type_main" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">?</div>
+									<div id="type_end" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">e</div>
+									<div id="type_trail" class="bcPaint_palette_color" style="background-color: rgb(255, 255, 0); visibility: visible;">t</div>
+								</div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden>
+									<div id="subtype_1" class="bcPaint_palette_color_subtype selected_subtype" style="background-color: rgb(199, 129, 0); visibility: visible;">1</div>
+									<div id="subtype_2" class="bcPaint_palette_color_subtype" style="background-color: rgb(255, 180, 41); visibility: visible;">2</div>
+								</div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1" name="bcPaint4_type1">
+								<input type="text" id="input_type_lead2" name="bcPaint4_type2">
+								<input type="text" id="input_type_start" name="bcPaint4_type3">
+								<input type="text" id="input_type_main" name="bcPaint4_type4">
+								<input type="text" id="input_type_end" name="bcPaint4_type5">
+								<input type="text" id="input_type_trail" name="bcPaint4_type6">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container" class="bcPaint-image4"><canvas id="bcPaintCanvas4" class="bcPaintfunctionality" hidden></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden>
+								<div id="zoom_1"></div>
+								<div id="zoom_2"></div>
+							</div>
+						</div>
+						<div id="bcPaint-bottom">
+							<div id="type_of_buttons" class="bcPaintfunctionality" hidden>
+								<div id="normal" class="class_buttontype button-type-selected"></div>
+								<div id="pointy" class="class_buttontype"></div>
+								<div id="intersect" class="class_buttontype"></div>
+								<div id="disconnect" class="class_buttontype"></div>
+							</div>
+							<div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div>
+						</div>
+				</div>
+
+			</div>
+
+			<div id="calculation_panel">
+				<button type="button">Calculate</button>
+			</div>
+		
+			<div id="footer">
+				<h3>Page 1 of 7</h3>
+				<h3>21 items pending</h3>
+			</div>
+			
+		</div>
+
+		<script type="text/javascript">
+			$('#bcPaint1').bcPaint1();
+			$('#bcPaint2').bcPaint2();
+			$('#bcPaint3').bcPaint3();
+			$('#bcPaint4').bcPaint4();
+		</script>
+
+</head>
+<body>
+</html>

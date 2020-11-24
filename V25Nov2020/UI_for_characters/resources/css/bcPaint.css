@@ -1,0 +1,191 @@
+body{
+        font-family: "proxima-nova-soft", "Proxima Nova Soft", Helvetica, Arial, sans-serif;
+        background-color: #f9f9f9;
+      }
+
+#container{
+        width: 100%;
+        !height: 100%;
+        height: 800px;
+        !max-width: 1960px;
+        margin: auto;
+        background-color: #ffffff;
+        position: relative;
+      }
+      #container > #button_panel{
+        height: 750px;
+        width:10%;
+        padding:0px;
+        display:inline-block;
+        border: 1px solid blue;
+        background-color: yellow;
+        float: left;
+        padding: 10px 0px 0px 10px;
+      }
+
+      #container > #frame_panel{
+        height: 750px;
+        width: 70%;
+        padding: 0px 0px 0px 50px;
+        display:inline-block;
+      }
+              #container > #frame_panel > div{
+                width: 50%;
+                height: 40%;
+                float: left;
+                padding: 0px 0px 0px 0px;
+              }
+              .frame{margin-top: 5%;}
+              .first_frame{margin-top: 0.5%;}
+
+#bcPaint-menu{
+  width: 80%;
+  height: 13%;
+}
+
+      #bcPaint-menu > div{
+			display:inline-block;
+			visibility:hidden;
+			height:90%;
+			!border: 1px solid #bdbdbd;
+			margin-left: 7px;
+			margin-right: 7px;
+      }
+      #div_undo{float:left;width:8%;}
+      #div_complete{float:right;width:8%;}
+      .selection_menu{width:8%;}
+					
+#bcPaint-header{
+  width: 80%;
+  height: 2%;
+  !background-color:#DCDCDC;
+  !border: 2px solid #bdbdbd;
+}
+
+      #bcPaint-header > div{
+			     display:inline-block;
+			     visibility:hidden;
+			     width: 5%;
+           height: 75%;
+           margin-top: 0.2%;
+           margin-left: 2%;
+          }
+      #normal.selected_content_type{border:3px solid red;}
+      #partially_scribbled.selected_content_type{border:3px solid blue;}
+      #scribbled.selected_content_type{border:3px solid green;}
+      #implied_superscript.selected_content_type{border:3px solid purple;}
+      #indicated_superscript.selected_content_type{border:3px solid orange;}
+
+      #bcPaint-header.selected_header{
+			      background-color:#C8C8C8;
+      }
+
+#bcPaint-mid{
+    width: 100%;
+    height: 70%;
+      }
+
+      #bcPaint-canvas-container{
+        width: 75%;
+        height: 100%;
+        border: 1px solid #696969;
+        float:left;
+        display: inline-block;
+      }
+      #bcPaint-canvas-container > canvas{
+        !border: 1px solid #696969;
+        width: 100%;
+        height: 100%;
+      }
+
+#bcPaint-right{
+    width: 14%;
+    height: 100%;
+    !border: 1px solid #696969;
+    float:right;  
+    display: inline-block;
+    visibility:hidden;
+     }
+
+      #bcPaint-right > div{
+            height:18%;
+            width:80%;  
+            margin-top:5px;
+            float:right;
+            !border: 1px solid green;     
+            }
+
+#bcPaint-bottom {
+	height: 20%;
+}
+#bcPaint-bottom > div{
+    width: 75%;
+    height: 95%;
+    float: left; 
+    !border: 1px solid green ; 
+	display:inline-block;
+    visibility:hidden;
+  }
+
+      #type_of_buttons{
+              width: 40%;
+              height: 95%;
+              float: right; 
+            !border: 1px solid red; 
+        }
+
+
+      #bottom > button{
+			  display:inline-block;
+              background-color: #3e4e5a;
+              color: #ffffff;
+              text-transform: uppercase;
+              border: 5px;
+              font-size: 10px;
+              padding: 5px 5px;
+              margin-right: 5%;
+              margin-top: 2px;
+              outline: none;
+              float:right;
+            }
+
+#container h5{
+               font-size: 10px;
+               font-weight: 400;
+               text-transform: uppercase;
+      }
+
+      #container h4{
+               font-size: 10px;
+               font-weight: 100;
+      }
+
+      #container h3{
+               font-size: 11px;
+               font-weight: 400;
+        }
+
+
+        #container > #header{
+              background-color: #313131;
+              color: #e8e8e8;
+              text-align: center;
+              width: 100%;
+              padding: 20px 0;
+              height:3%;
+        }
+            
+       #calculation_panel{
+               height: 750px;
+               width:15%;
+               padding: 0px 0px 0px 10px;
+               display:inline-block;
+               float: right;
+               !border: 1px solid blue;
+      }
+
+      #calculation_panel > div{
+               font-size: 15px;
+               height: 24%;
+               border: 1px solid grey;
+      }

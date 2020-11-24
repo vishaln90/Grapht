@@ -99,17 +99,17 @@
 			});
 
 			// Prevent scrolling on touch event
-			document.body_start.addEventListener("touchstart", function (e) {
+			document.body.addEventListener("touchstart", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
 			}, false);
-			document.body_start.addEventListener("touchend", function (e) {
+			document.body.addEventListener("touchend", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
 			}, false);
-			document.body_start.addEventListener("touchmove", function (e) {
+			document.body.addEventListener("touchmove", function (e) {
 			  if (e.target == 'paintCanvas') {
 			    e.preventDefault();
 			  }
@@ -176,7 +176,6 @@
 							source_image_full_path: source_image_full_path
 						});
 				});
-			
 				$.fn.bcPaint1.update_line_status("Complete");
 		},
 		
@@ -269,13 +268,13 @@
 			//alert(line_text);
 			line_text = line_text.replace("  "," ");
 			line_text = line_text.split(" ");
-		if(jQuery.type(line_text[counter.length-1]) == "undefined" || line_text[counter.length-1] == "" )
+		if(jQuery.type(line_text[counter.length-1]) == "undefined" || line_text[counter.length-1] == "" && x_start.length > 0)
 				{alert("Please enter this line in input box correctly."); word_value.push("dummy_value");$.fn.bcPaint1.undo_function();}
 			else
 				{
 					word_value.push(line_text[counter.length-1]);
 					if (endPoint.x-startPoint.x < 0.01 * width_canvas || endPoint.y-startPoint.y < 0.01 * height_canvas) {$.fn.bcPaint1.undo_function();}
-					if (word_value[counter.length-1] == "" || counter.length > line_text.length) 
+					if (word_value[counter.length-1] == "" || counter.length > line_text.length && x_start.length > 0) 
 						{alert("Please ensure that the line entered in the input box is correct.");$.fn.bcPaint1.undo_function();}
 					$.fn.bcPaint1.outline_blocks();
 				}
