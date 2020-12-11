@@ -1,0 +1,283 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Basic Canvas Paint Plugin Example</title>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.css"/>
+		<link type="text/css" rel="stylesheet" href="resources/css/bcPaint.mobile.css"/>
+
+<script src="resources/ajax/jquery.min.js"></script>
+		
+		<script type="text/javascript" src="resources/js/bcPaint_default.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_1.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_2.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_3.js"></script>
+		<script type="text/javascript" src="resources/js/bcPaint_4.js"></script>
+		<style type="text/css">
+			*{
+			  margin: 0;
+			  padding: 0;
+			  list-style: none;
+			}
+
+			body{
+			  font-family: "proxima-nova-soft", "Proxima Nova Soft", Helvetica, Arial, sans-serif;
+			  background-color: #f9f9f9;
+			}
+
+			#container{
+			  width: 100%;
+			  !height: 100%;
+			  height: 800px;
+			  max-width: 1960px;
+			  margin: auto;
+			  background-color: #ffffff;
+			  position: relative;
+			}
+
+			#container h5{
+			  font-size: 12px;
+			  font-weight: 400;
+			  text-transform: uppercase;
+			  margin-top: 40px;
+			  margin-bottom: 10px;
+			}
+
+			#container h4{
+			  font-size: 12px;
+			  font-weight: 300;
+			}
+
+			#container h3{
+			  font-size: 16px;
+			  font-weight: 400;
+			  margin: 10px 0;
+			}
+
+			#container > #header{
+			  background-color: #313131;
+			  color: #e8e8e8;
+			  text-align: center;
+			  width: 100%;
+			  padding: 20px 0;
+			  height:50px;
+			}
+
+			#container > #button_panel{
+			  height: 750px;
+			  width:500px;
+			  padding:0px;
+			  display:inline-block;
+			  border: 1px solid blue;
+				background-color: yellow;
+				float: left;
+				padding: 20px 0px 0px 10px;
+			}
+
+			#container > #frame_panel{
+			  height: 750px;
+			  width: 900px;
+			  padding: 0px 0px 0px 50px;
+			  display:inline-block;
+			}
+						
+			#container > #calculation_panel{
+			  height: 750px;
+			  width:350px;
+			  padding: 0px 0px 0px 10px;
+			  display:inline-block;
+				background-color: pink;
+				float: right;
+			}
+			.button_column{
+			  display:inline-block;
+			  height: 100%;
+			  width:10%;
+			  padding:0px 0px 0px 0px;
+			  margin-left:0px;
+			  margin-top:0px;
+			  !border: 1px solid blue;
+			}
+			
+			.button_column > div{
+			width: 90%;
+			margin-top:30px;
+			margin-left: auto;
+			margin-right: auto;
+			border: 1px solid green;
+			border-radius: 20%;
+			}
+			#button_col_main
+			{
+				margin-left: 5%;
+			}
+			#button_col_main_sub
+			{
+				width:9%;
+			}
+			#button_col_main_additional
+			{
+				width:9%;
+				margin-right: 3%;
+			}
+
+			#bcPaint-input-div{
+			width:60%;
+			height:70%;
+			display:inline-block;
+			float:right;
+			}
+			
+			input {
+			width:8%;
+			height:100%;
+			margin-left:0px;
+			margin-top:3px;
+			display:inline-block;
+			text-align:center;
+			visibility:hidden;
+			}
+			#input_type_lead2{
+			width:15%;
+			}
+			.first_input_type {margin-left:3%;}
+			
+			canvas{
+			!background: transparent;	
+			}	
+			
+			#bcPaint-right > div {
+				width:80%;
+				float:right;
+				}
+			
+				.zoom_image{height:18%; margin-top:5px;}
+				
+				#size_palette{height:40%; margin-top:15px;}
+				
+				.point_size{
+					  width: 15px; height: 15px;
+					  border-radius: 50%;
+					  margin-top:10%;
+					  background-color:#00FF00;
+					}
+			
+			#type_of_buttons > div{
+				width: 15%;
+				height: 90%;
+				float: left; 
+				margin-left:5px;
+				!border: 1px solid red;
+				display:inline-block;
+				visibility:hidden;			
+				}
+				
+			.button-type-selected {
+				border: 2px solid red;
+			}
+						
+			#drop_down_div{width: 31%;}
+			
+			.bcPaint_palette_color_subtype{background-color: rgb(199, 129, 0);}
+			.selected_subtype {background-color: rgb(255, 180, 41);}
+			.bcPaint_palette_color{background-color: rgb(255, 255, 0);}
+			.selected_type{
+				border: 2px solid black;
+				!background-color: #bdbdbd;
+				margin-bottom: -2px;
+				}
+			.selected_point_size{border: 1px solid black;}
+			
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<h3 id="character_value">e</h3>
+				<h4>Draw, E-Sign and Export</h4>
+			</div>
+			<div id="button_panel" >
+
+			</div>
+
+			
+			<div id="frame_panel">
+				<div id="bcPaint1" class="frame">
+						<div id="bcPaint-menu"> 
+							<div id="drop_down_div" class="bcPaint-menu_left">
+									<select id="dropdown_previous_letter" name="dropdown_previous" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_previous">Connected</option>
+										<option value="disconnected_with_previous">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_undo" class="bcPaint-menu_left outline_on_hover"></div>
+							<div id="drop_down_div" class="bcPaint-menu_right" style="border: 1px solid green;">
+									<select id="dropdown_next_letter" name="dropdown_next" style="width: 100%; height: 100%;">
+										<option value="not_selected">--</option>
+										<option value="connected_with_next">Connected</option>
+										<option value="disconnected_with_next">Disconnected</option>
+									</select>
+							</div>
+							<div id="div_complete" class="bcPaint-menu_right outline_on_hover"></div>
+							<div id="div_cancel" class="bcPaint-menu_right outline_on_hover"></div>
+						</div>
+						<div id="bcPaint-header">
+							<div id="bcPaint-palette-container" class="bcPaintfunctionality" hidden>
+								<div id="bcPaint-palette" class="bcPaintfunctionality" hidden></div>
+								<div id="bcPaint-palette-subtype" class="bcPaintfunctionality" hidden></div>
+							</div>
+							<div id="bcPaint-input-div" class="bcPaintfunctionality" hidden>
+								<input type="text" id="input_type_lead1">
+								<input type="text" id="input_type_lead2">
+							</div>
+						</div>
+						<div id="bcPaint-mid">
+							<div id="bcPaint-canvas-container" class="bcPaint-image1"><canvas id="bcPaintCanvas1"></canvas></div>
+							<div id="bcPaint-right" class="bcPaintfunctionality" hidden>
+								<div id="zoom_1" class="zoom_image"></div>
+								<div id="zoom_2" class="zoom_image"></div>
+								<div id="size_palette" class="bcPaintfunctionality" hidden>
+									<div id="size_1" class="point_size"></div>
+									<div id="size_2" class="point_size"></div>
+									<div id="size_3" class="point_size"></div>
+									<div id="size_4" class="point_size"></div>
+									<div id="size_5" class="point_size"></div>
+								</div>
+							</div>
+						</div>
+						<div id="bcPaint-bottom">
+							<div id="type_of_buttons" class="bcPaintfunctionality" hidden>
+								<div id="normal" class="class_buttontype button-type-selected"></div>
+								<div id="pointy" class="class_buttontype"></div>
+								<div id="intersect" class="class_buttontype"></div>
+								<div id="disconnect" class="class_buttontype"></div>
+							</div>
+							<div id="bcPaint-bottom-palette" class="bcPaintfunctionality" hidden></div>
+						</div>
+				</div>
+				
+			</div>
+			
+
+			<div id="calculation_panel">
+				<button type="button">Calculate</button>
+				<div id="calc1"></div>
+			</div>
+		
+			<div id="footer">
+				<div id="current_frame_count">0</div>
+				<h2 id="pending_count_div">21 items pending</h3>
+			</div>
+			
+		</div>
+
+		<script type="text/javascript">
+			$('#bcPaint1').bcPaint1();
+		</script>
+
+</head>
+<body>
+</html>
